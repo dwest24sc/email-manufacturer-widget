@@ -2,6 +2,7 @@ ZOHO.embeddedApp.on("PageLoad", async function(data) {
   const recordId = data.EntityId;
 
   await ZOHO.CRM.init();
+console.log("Widget script loaded!");
 
   try {
     const salesOrderResp = await ZOHO.CRM.API.getRecord({
