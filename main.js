@@ -1,9 +1,14 @@
-ZOHO.embeddedApp.on("PageLoad", function(data) {
-  console.log("PageLoad event triggered", data);
-});
+console.log("main.js is running");
 
-ZOHO.embeddedApp.init();
+ZOHO.embeddedApp.on("PageLoad", async function(data) {
+  console.log("PageLoad event triggered:", data);
+
+  await ZOHO.CRM.init();
+
   try {
+    const recordId = data.EntityId;
+    console.log("Record ID:", recordId);
+
     const salesOrderResp = await ZOHO.CRM.API.getRecord({
       Entity: "Sales_Orders",
       RecordID: recordId,
