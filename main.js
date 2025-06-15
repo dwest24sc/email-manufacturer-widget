@@ -1,9 +1,8 @@
-ZOHO.embeddedApp.on("PageLoad", async function(data) {
-  const recordId = data.EntityId;
+ZOHO.embeddedApp.on("PageLoad", function(data) {
+  console.log("PageLoad event triggered", data);
+});
 
-  await ZOHO.CRM.init();
-console.log("Widget script loaded!");
-
+ZOHO.embeddedApp.init();
   try {
     const salesOrderResp = await ZOHO.CRM.API.getRecord({
       Entity: "Sales_Orders",
