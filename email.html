@@ -7,6 +7,13 @@
 </head>
 <body>
   <h3>Loading widget...</h3>
-  <script src="main.js"></script>
+  <script>
+    window.addEventListener("load", function() {
+      const script = document.createElement("script");
+      script.src = "main.js";
+      script.onload = () => console.log("main.js loaded after ZOHO SDK.");
+      document.body.appendChild(script);
+    });
+  </script>
 </body>
 </html>
