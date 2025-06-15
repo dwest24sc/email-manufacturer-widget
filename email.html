@@ -4,21 +4,33 @@
   <meta charset="UTF-8">
   <title>Email Manufacturer Widget</title>
   <script src="https://js.zohostatic.com/support/zoho-crm-sdk/2.0.0/sdk.js"></script>
+  <style>
+    body { font-family: sans-serif; padding: 1em; }
+    .log { background: #f9f9f9; border: 1px solid #ccc; padding: 0.5em; margin-bottom: 1em; }
+  </style>
 </head>
 <body>
-  <h3>Preparing email to manufacturer...</h3>
+  <div id="output" class="log">Widget loaded. Waiting for Zoho SDK...</div>
 
   <script>
-    console.log("Inline script running...");
+    const output = document.getElementById("output");
+    const log = (msg) => {
+      output.innerHTML += "<br>" + msg;
+      console.log(msg);
+    };
+
+    log("Initializing Zoho SDK...");
 
     ZOHO.embeddedApp.on("PageLoad", async function(data) {
-      console.log("PageLoad event triggered:", data);
+      log("PageLoad event triggered");
+      log("Data: " + JSON.stringify(data));
 
       await ZOHO.CRM.init();
+      log("Zoho CRM SDK initialized");
 
       try {
         const recordId = data.EntityId;
-        console.log("Record ID:", recordId);
+        log("Record ID: " + recordId);
 
         const salesOrderResp = await ZOHO.CRM.API.getRecord({
           Entity: "Sales_Orders",
@@ -28,9 +40,10 @@
         const salesOrder = salesOrderResp.data[0];
         const subject = salesOrder.Subject || "Sales Order";
         const manufacturerField = salesOrder.Manufacturer;
+        log("Manufacturer field: " + JSON.stringify(manufacturerField));
 
         if (!manufacturerField || !manufacturerField.name) {
-          alert("No Manufacturer selected on this Sales Order.");
+          log("No Manufacturer selected on this Sales Order.");
           return;
         }
 
@@ -42,9 +55,10 @@
 
         const manufacturer = searchResp.data?.[0];
         const emailTo = manufacturer?.PO_Email;
+        log("PO_Email: " + emailTo);
 
         if (!emailTo) {
-          alert("Manufacturer PO_Email not found.");
+          log("Manufacturer PO_Email not found.");
           return;
         }
 
@@ -56,10 +70,11 @@
           module: "Sales_Orders"
         });
 
+        log("Email compose window opened.");
         ZOHO.CRM.UI.Popup.close();
       } catch (err) {
-        console.error("Error:", err);
-        alert("Failed to prepare email.");
+        console.error(err);
+        log("Error: " + err.message);
       }
     });
 
